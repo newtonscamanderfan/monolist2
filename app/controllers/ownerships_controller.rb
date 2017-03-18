@@ -11,7 +11,7 @@ class OwnershipsController < ApplicationController
     # itemsテーブルに存在しない場合は楽天のデータを登録する。
     if @item.new_record?
       # TODO 商品情報の取得 RakutenWebService::Ichiba::Item.search を用いてください
-      items = {}
+      items = RakutenWebService::Ichiba::Item.search(itemCode: @item.item_code)
 
       item                  = items.first
       @item.title           = item['itemName']
@@ -25,31 +25,23 @@ class OwnershipsController < ApplicationController
     # TODO ユーザにwant or haveを設定する
     # params[:type]の値にHaveボタンが押された時には「Have」,
     # Wantボタンが押された時には「Want」が設定されています。
-    
-
+    if params[:type] == "Have"
+      current_user.have(@item) 
+    elsif params[:type] == "Want"
+      current_user.want(@item)
+    end
   end
 
   def destroy
     @item = Item.find(params[:item_id])
-
     # TODO 紐付けの解除。 
     # params[:type]の値にHave itボタンが押された時には「Have」,
     # Want itボタンが押された時には「Want」が設定されています。
-
-  end
-  
-  def follow(other_user)
-    following_relationships.find_or_create_by(followed_id: other_user.id)
-  end
-
-  # フォローしているユーザーをアンフォローする
-  def unfollow(other_user)
-    following_relationship = following_relationships.find_by(followed_id: other_user.id)
-    following_relationship.destroy if following_relationship
-  end
-
-  # あるユーザーをフォローしているかどうか？
-  def following?(other_user)
-    following_users.include?(other_user)
+    if params[:type] == "Have"
+      current_user.unhave(@item)
+    elsif params[:type] == "Want"
+      current_user.unwant(@item)
+    end
   end
 end
+
