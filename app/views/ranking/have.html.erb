@@ -1,0 +1,11 @@
+<h1>Monolist`s Have Ranking</h1>
+
+
+<ul>
+  <% @items.each.with_index(1) do |item, index| %>
+    <li>
+      <%= index %>位：<%= item.title %><br>
+      <%= image_tag(item.small_image , alt: item.title) %>
+    </li>
+  <% end %>
+</ul>

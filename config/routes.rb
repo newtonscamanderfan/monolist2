@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
 
+<<<<<<< master
+=======
+  get 'ranking/want'
+  get 'ranking/have'
+
+>>>>>>> local
   root 'welcome#index'
+
 
   get    'signup', to: 'users#new'
   get    'login' , to: 'sessions#new'
